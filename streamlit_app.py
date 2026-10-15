@@ -40,7 +40,7 @@ def verifier_mot_de_passe():
         "Se connecter",
         type="primary",
     ):
-        if mot_de_passe_saisi == st.secrets["APP_PASSWORD"\]:
+        if mot_de_passe_saisi == st.secrets["APP_PASSWORD"]:
             st.session_state.authentifie = True
             st.rerun()
         else:
