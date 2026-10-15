@@ -744,3 +744,43 @@ st.caption(
     "NutriPhoto est un outil personnel d'estimation. "
     "Les résultats ne constituent pas une mesure médicale."
 )
+
+
+# =========================================================
+# DIAGNOSTIC TEMPORAIRE DE LA BASE
+# =========================================================
+
+with st.expander("🔧 Diagnostic de la base de données"):
+
+    st.write(
+        "Ce test vérifie que NutriPhoto peut communiquer "
+        "avec la table repas de Supabase."
+    )
+
+    if st.button("Tester la connexion Supabase"):
+
+        try:
+            reponse = (
+                supabase
+                .table("repas")
+                .select("id")
+                .limit(1)
+                .execute()
+            )
+
+            st.success(
+                "Connexion Supabase réussie."
+            )
+
+            st.write(
+                "Nombre de repas retournés par le test : "
+                f"{len(reponse.data)}"
+            )
+
+        except Exception as erreur:
+
+            st.error(
+                "La connexion Supabase a échoué."
+            )
+
+            st.code(str(erreur))
