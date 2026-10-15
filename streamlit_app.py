@@ -11,7 +11,46 @@ st.set_page_config(
     page_icon="🍽️",
     layout="wide",
 )
+# =========================================================
+# PROTECTION DE L'APPLICATION PAR MOT DE PASSE
+# =========================================================
 
+def verifier_mot_de_passe():
+    """
+    Affiche un écran de connexion simple.
+
+    Le véritable mot de passe est stocké dans les secrets
+    de Streamlit et n'apparaît jamais dans GitHub.
+    """
+
+    if "authentifie" not in st.session_state:
+        st.session_state.authentifie = False
+
+    if st.session_state.authentifie:
+        return True
+
+    st.title("🔒 Connexion à NutriPhoto")
+
+    mot_de_passe_saisi = st.text_input(
+        "Mot de passe",
+        type="password",
+    )
+
+    if st.button(
+        "Se connecter",
+        type="primary",
+    ):
+        if mot_de_passe_saisi == st.secrets["APP_PASSWORD"\]:
+            st.session_state.authentifie = True
+            st.rerun()
+        else:
+            st.error("Mot de passe incorrect.")
+
+    return False
+
+
+if not verifier_mot_de_passe():
+    st.stop()
 
 # =========================================================
 # BASE NUTRITIONNELLE TEMPORAIRE
