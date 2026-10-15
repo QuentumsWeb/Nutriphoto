@@ -315,10 +315,10 @@ with colonne_repas:
 
     st.caption(
         f"Valeurs pour 100 g : "
-        f"{valeurs_selection['calories'\]:.1f} kcal, "
-        f"{valeurs_selection['proteines'\]:.1f} g de protéines, "
-        f"{valeurs_selection['glucides'\]:.1f} g de glucides et "
-        f"{valeurs_selection['lipides'\]:.1f} g de lipides."
+        f"{valeurs_selection['calories']:.1f} kcal, "
+        f"{valeurs_selection['proteines']:.1f} g de protéines, "
+        f"{valeurs_selection['glucides']:.1f} g de glucides et "
+        f"{valeurs_selection['lipides']:.1f} g de lipides."
     )
 
     previsualisation = calculer_nutriments(
@@ -331,25 +331,25 @@ with colonne_repas:
     with col_kcal:
         st.metric(
             "Calories",
-            f"{previsualisation['Calories (kcal)'\]:.1f}",
+            f"{previsualisation['Calories (kcal)']:.1f}",
         )
 
     with col_prot:
         st.metric(
             "Protéines",
-            f"{previsualisation['Protéines (g)'\]:.1f} g",
+            f"{previsualisation['Protéines (g)']:.1f} g",
         )
 
     with col_gluc:
         st.metric(
             "Glucides",
-            f"{previsualisation['Glucides (g)'\]:.1f} g",
+            f"{previsualisation['Glucides (g)']:.1f} g",
         )
 
     with col_lip:
         st.metric(
             "Lipides",
-            f"{previsualisation['Lipides (g)'\]:.1f} g",
+            f"{previsualisation['Lipides (g)']:.1f} g",
         )
 
     if st.button(
