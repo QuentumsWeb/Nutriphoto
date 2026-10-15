@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-
+from supabase import create_client
 
 # =========================================================
 # CONFIGURATION DE L'APPLICATION
@@ -51,6 +51,24 @@ def verifier_mot_de_passe():
 
 if not verifier_mot_de_passe():
     st.stop()
+    
+# =========================================================
+# CONNEXION À SUPABASE
+# =========================================================
+
+def obtenir_supabase():
+    """
+    Crée le client permettant à Python de communiquer
+    avec la base de données Supabase.
+    """
+
+    url = st.secrets["SUPABASE_URL"]
+    cle = st.secrets["SUPABASE_SECRET_KEY"]
+
+    return create_client(url, cle)
+
+
+supabase = obtenir_supabase()
 
 # =========================================================
 # BASE NUTRITIONNELLE TEMPORAIRE
