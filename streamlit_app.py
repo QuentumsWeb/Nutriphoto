@@ -271,7 +271,105 @@ def vider_repas():
 
     st.session_state.aliments_repas = []
 
+def enregistrer_repas_supabase(
+    date_repas,
+    heure_repas,
+    type_repas,
+    nom_repas,
+    tableau_aliments,
+):
+    """
+    Enregistre le résumé du repas dans la table repas,
+    puis enregistre ses aliments dans aliments_repas.
+    """
 
+    # Calcul des totaux à partir du tableau du repas.
+    total_calories = float(
+        tableau_aliments["Calories (kcal)"].sum()
+    )
+
+    total_proteines = float(
+        tableau_aliments["Protéines (g)"].sum()
+    )
+
+    total_glucides = float(
+        tableau_aliments["Glucides (g)"].sum()
+    )
+
+    total_lipides = float(
+        tableau_aliments["Lipides (g)"].sum()
+    )
+
+    # Préparation de la ligne destinée à la table repas.
+    donnees_repas = {
+        "date_repas": date_repas.isoformat(),
+        "heure_repas": heure_repas.strftime("%H:%M:%S"),
+        "type_repas": type_repas,
+        "nom_repas": nom_repas.strip() or None,
+        "calories_total": round(total_calories, 2),
+        "proteines_total": round(total_proteines, 2),
+        "glucides_total": round(total_glucides, 2),
+        "lipides_total": round(total_lipides, 2),
+    }
+
+    # Enregistrement du résumé dans la table repas.
+    reponse_repas = (
+        supabase
+        .table("repas")
+        .insert(donnees_repas)
+        .select("id")
+        .execute()
+    )
+
+    # Vérification de la réponse de Supabase.
+    if not reponse_repas.data:
+        raise RuntimeError(
+            "Supabase n'a pas renvoyé l'identifiant du repas."
+        )
+
+    # Identifiant généré automatiquement dans la table repas.
+    repas_id = reponse_repas.data[0]["id"]
+
+    # Préparation des aliments associés au repas.
+    aliments_a_enregistrer = []
+
+    for _, ligne in tableau_aliments.iterrows():
+        aliment = {
+            "repas_id": repas_id,
+            "aliment": str(ligne["Aliment"]),
+            "quantite_g": float(ligne["Quantité (g)"]),
+            "calories": float(ligne["Calories (kcal)"]),
+            "proteines_g": float(ligne["Protéines (g)"]),
+            "glucides_g": float(ligne["Glucides (g)"]),
+            "lipides_g": float(ligne["Lipides (g)"]),
+        }
+
+        aliments_a_enregistrer.append(aliment)
+
+    try:
+        # Enregistrement groupé de tous les aliments.
+        (
+            supabase
+            .table("aliments_repas")
+            .insert(aliments_a_enregistrer)
+            .execute()
+        )
+
+    except Exception:
+        # Si les aliments ne sont pas enregistrés,
+        # suppression du résumé pour éviter un repas incomplet.
+        (
+            supabase
+            .table("repas")
+            .delete()
+            .eq("id", repas_id)
+            .execute()
+        )
+
+        raise
+
+    return repas_id
+``
 # =========================================================
 # EN-TÊTE
 # =========================================================
