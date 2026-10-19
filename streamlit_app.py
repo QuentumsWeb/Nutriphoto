@@ -902,7 +902,6 @@ with colonne_objectif:
     st.write(
         "- Les valeurs alimentaires sont indicatives.\n"
         "- Les portions sont encore saisies manuellement.\n"
-        "- Le repas n'est pas enregistré définitivement.\n"
         "- La photographie n'est pas encore analysée.\n"
         "- La recette et le mode de cuisson ne sont pas pris en compte."
     )
