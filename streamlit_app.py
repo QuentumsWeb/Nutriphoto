@@ -382,8 +382,8 @@ st.write(
 )
 
 st.info(
-    "Version 2 : ajout des glucides et lipides, "
-    "modification des portions et suppression individuelle."
+    "Version 3 : calcul des macronutriments et "
+    "enregistrement permanent des repas dans Supabase."
 )
 
 
@@ -707,7 +707,82 @@ with colonne_repas:
             f"macronutriments : environ "
             f"{calories_calculees_macros:.1f} kcal."
         )
+        
+        st.divider()
 
+        st.subheader("4. Enregistrer ce repas")
+
+        st.write(
+            "Ces informations permettront de retrouver "
+            "le repas dans ton historique."
+        )
+
+        col_date, col_heure = st.columns(2)
+
+        with col_date:
+            date_du_repas = st.date_input(
+                "Date du repas",
+                value=date.today(),
+                key="date_du_repas",
+            )
+
+        with col_heure:
+            heure_du_repas = st.time_input(
+                "Heure du repas",
+                value=datetime.now().time().replace(
+                    second=0,
+                    microsecond=0,
+                ),
+                key="heure_du_repas",
+            )
+
+        type_du_repas = st.selectbox(
+            "Type de repas",
+            options=[
+                "Petit-déjeuner",
+                "Déjeuner",
+                "Dîner",
+                "Collation",
+            ],
+            key="type_du_repas",
+        )
+
+        nom_du_repas = st.text_input(
+            "Nom du repas facultatif",
+            placeholder="Exemple : Poulet, riz et brocoli",
+            key="nom_du_repas",
+        )
+
+        if st.button(
+            "Enregistrer ce repas",
+            type="primary",
+            use_container_width=True,
+            key="bouton_enregistrer_repas",
+        ):
+            try:
+                with st.spinner(
+                    "Enregistrement dans Supabase..."
+                ):
+                    repas_id = enregistrer_repas_supabase(
+                        date_repas=date_du_repas,
+                        heure_repas=heure_du_repas,
+                        type_repas=type_du_repas,
+                        nom_repas=nom_du_repas,
+                        tableau_aliments=tableau_totaux,
+                    )
+
+                st.success(
+                    "Repas enregistré avec succès. "
+                    f"Identifiant Supabase : {repas_id}"
+                )
+
+            except Exception as erreur:
+                st.error(
+                    "Le repas n'a pas pu être enregistré."
+                )
+
+                st.code(str(erreur))
+                
     else:
 
         total_calories = 0.0
